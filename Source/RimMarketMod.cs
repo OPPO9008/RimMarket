@@ -154,7 +154,16 @@ namespace RimMarket
 		{
 			Check("Thieves", ref s.thievesEnabled, Hint("Thieves"));
 			if (s.thievesEnabled)
+			{
 				s.thiefMtbDays = Slider("ThiefMtb", s.thiefMtbDays, 0.5f, 10f, 0.5f, Days(s.thiefMtbDays), Hint("ThiefMtb"), SubIndent);
+				string[] reactions =
+				{
+					"RimMarket.Settings.ThiefKeepSpeed".Translate(),
+					"RimMarket.Settings.ThiefNormalSpeed".Translate(),
+					"RimMarket.Settings.ThiefPause".Translate(),
+				};
+				ChoiceRow("ThiefReaction", s.thiefReaction, reactions, v => s.thiefReaction = v, SubIndent);
+			}
 			Check("SlaveAuctions", ref s.slaveAuctions, Hint("SlaveAuctions"));
 			Check("Fair", ref s.fairEnabled, Hint("Fair"));
 			if (s.fairEnabled)
@@ -245,20 +254,28 @@ namespace RimMarket
 
 		private void DifficultyRow(RimMarketSettings s)
 		{
-			Rect r = NextRow(0f);
-			Hover(r, Hint("Difficulty"));
+			var levels = new string[Market.MarketDifficulty.Tough + 1];
+			for (int level = Market.MarketDifficulty.Relaxed; level <= Market.MarketDifficulty.Tough; level++)
+				levels[level] = Market.MarketDifficulty.Label(level).CapitalizeFirst();
+			ChoiceRow("Difficulty", s.marketDifficulty, levels, v => s.marketDifficulty = v, 0f);
+		}
+
+		private void ChoiceRow(string key, int current, string[] labels, System.Action<int> pick, float indent)
+		{
+			Rect r = NextRow(indent);
+			Hover(r, Hint(key));
 			float buttonWidth = Mathf.Round(width * SliderShare) + ValueWidth + 6f;
 			var label = new Rect(r.x, r.y, r.width - buttonWidth - 12f, r.height);
 			var button = new Rect(r.xMax - buttonWidth, r.y + 2f, buttonWidth, r.height - 4f);
 			Text.Anchor = TextAnchor.MiddleLeft;
-			Widgets.Label(label, "RimMarket.Settings.Difficulty".Translate());
+			Widgets.Label(label, ("RimMarket.Settings." + key).Translate());
 			Text.Anchor = TextAnchor.UpperLeft;
-			if (!Widgets.ButtonText(button, Market.MarketDifficulty.Label(s.marketDifficulty).CapitalizeFirst())) return;
+			if (!Widgets.ButtonText(button, labels[Mathf.Clamp(current, 0, labels.Length - 1)])) return;
 			var options = new List<FloatMenuOption>();
-			for (int level = Market.MarketDifficulty.Relaxed; level <= Market.MarketDifficulty.Tough; level++)
+			for (int i = 0; i < labels.Length; i++)
 			{
-				int pick = level;
-				options.Add(new FloatMenuOption(Market.MarketDifficulty.Label(pick).CapitalizeFirst(), () => s.marketDifficulty = pick));
+				int choice = i;
+				options.Add(new FloatMenuOption(labels[i], () => pick(choice)));
 			}
 			Find.WindowStack.Add(new FloatMenu(options));
 		}

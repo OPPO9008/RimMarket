@@ -1402,8 +1402,15 @@ namespace RimMarket.Market
 			}
 		}
 
+		private static void ReactToThief(bool snatch)
+		{
+			if (S.thiefReaction == RimMarketSettings.ThiefNormalSpeed) Find.TickManager.slower.SignalForceNormalSpeed();
+			else if (snatch && S.thiefReaction == RimMarketSettings.ThiefPause) Find.TickManager.Pause();
+		}
+
 		public void Notify_Snatched(Pawn thief, Thing loot, StallVisit v)
 		{
+			ReactToThief(true);
 			var t = new MarketTheft
 			{
 				thief = thief,
@@ -1591,6 +1598,7 @@ namespace RimMarket.Market
 		private void Patrol()
 		{
 			if (thefts.Count > 0) ResolveThefts();
+			if (thefts.Count > 0) ReactToThief(false);
 			if (visits.Count > 0) ThiefArrivals();
 			if (visits.Count > 0 || auctions.Count > 0) Step(AuctionPatrol);
 			if (visits.Count > 0 && S.shoppersVisit) Step(ShopperArrivals);

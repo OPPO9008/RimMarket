@@ -19,6 +19,11 @@
 	<RimMarket.Settings.MaxMerchantsHint>How many caravans can trade at your market at the same time.</RimMarket.Settings.MaxMerchantsHint>
 	<RimMarket.Settings.HaggleBonusHint>What a good haggle takes off the prices, and what a bad one adds.</RimMarket.Settings.HaggleBonusHint>
 	<RimMarket.Settings.ThiefMtbHint>Average number of market days between two thieves.</RimMarket.Settings.ThiefMtbHint>
+	<RimMarket.Settings.ThiefReaction>When a thief strikes</RimMarket.Settings.ThiefReaction>
+	<RimMarket.Settings.ThiefReactionHint>What the game does when a thief grabs something.\n\nKeep speed: nothing changes.\nNormal speed: the game drops to normal speed until the thief is caught or gone, like it does in a fight.\nPause: the game pauses the moment it happens.</RimMarket.Settings.ThiefReactionHint>
+	<RimMarket.Settings.ThiefKeepSpeed>Keep speed</RimMarket.Settings.ThiefKeepSpeed>
+	<RimMarket.Settings.ThiefNormalSpeed>Normal speed</RimMarket.Settings.ThiefNormalSpeed>
+	<RimMarket.Settings.ThiefPause>Pause</RimMarket.Settings.ThiefPause>
 	<RimMarket.Settings.MessagesHint>Messages in the corner of the screen about what happens at the market.</RimMarket.Settings.MessagesHint>
 	<RimMarket.Settings.FairCostHint>What the heralds charge to announce a Great Fair, in silver.</RimMarket.Settings.FairCostHint>
 	<RimMarket.Settings.FairCooldownHint>The least number of days between two Great Fairs.</RimMarket.Settings.FairCooldownHint>
