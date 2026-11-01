@@ -303,7 +303,7 @@ namespace RimMarket.Market
 				{
 					StallVisit v = visits[i];
 					if (v.map != pawn.Map || !MerchantAtPost(v)) continue;
-					if (!pawn.CanReach(v.stall.CustomerCell, PathEndMode.OnCell, Danger.None)) continue;
+					if (!v.stall.CustomerCell.InAllowedArea(pawn) || !pawn.CanReach(v.stall.CustomerCell, PathEndMode.OnCell, Danger.None)) continue;
 					stalls.Add(v.stall);
 					sellers.Add(v.trader);
 				}
@@ -314,7 +314,7 @@ namespace RimMarket.Market
 				for (int i = 0; i < colonyBuffer.Count; i++)
 				{
 					CompMarketStall c = colonyBuffer[i].Stall;
-					if (c == null || !pawn.CanReach(c.CustomerCell, PathEndMode.OnCell, Danger.None)) continue;
+					if (c == null || !c.CustomerCell.InAllowedArea(pawn) || !pawn.CanReach(c.CustomerCell, PathEndMode.OnCell, Danger.None)) continue;
 					stalls.Add(c);
 					sellers.Add(ColonyStalls.KeeperAt(colonyBuffer[i]));
 				}
@@ -343,7 +343,7 @@ namespace RimMarket.Market
 			for (int i = 0; i < cells.Count; i++)
 			{
 				IntVec3 c = cells[i];
-				if (!c.InBounds(map) || !c.Standable(map)) continue;
+				if (!c.InBounds(map) || !c.Standable(map) || !c.InAllowedArea(pawn)) continue;
 				if (!pawn.CanReserveAndReach(c, PathEndMode.OnCell, Danger.None)) continue;
 				return c;
 			}
