@@ -218,10 +218,10 @@
 	<RimMarket.QualityUpTo>Up to {0}</RimMarket.QualityUpTo>
 	<RimMarket.QualityFromShort>{0}+</RimMarket.QualityFromShort>
 	<RimMarket.StallSetupRefill>Refill</RimMarket.StallSetupRefill>
-	<RimMarket.StallSetupRefillTip>Ticked: the stall keeps this many on the counter and your haulers bring more after every sale. The line never runs out.\nUnticked: it sells this many, then the line is done.</RimMarket.StallSetupRefillTip>
+	<RimMarket.StallSetupRefillTip>Ticked: the stall keeps this many on the counter and your haulers bring more after every sale. The line never runs out.\nUnticked: it sells this many, then the line is done.\n\nDrag across the boxes to set several lines at once.</RimMarket.StallSetupRefillTip>
 	<RimMarket.StallSetupReserve>Keep home</RimMarket.StallSetupReserve>
 	<RimMarket.StallSetupReserveTip>Your haulers stop bringing this to the stall once the colony is down to this many, so you never sell your last medicine. What is already on the counter stays for sale.\n\nHold Shift for 10 at a time, Ctrl for 100.</RimMarket.StallSetupReserveTip>
-	<RimMarket.StallSetupAdjustTip>How many to sell, out of what the colony has. With Refill ticked, how many to keep on the counter. Type a number in the box, or use the buttons: hold Shift for 10 at a time, Ctrl for 100. All: everything, or nothing if it is already everything.</RimMarket.StallSetupAdjustTip>
+	<RimMarket.StallSetupAdjustTip>How many to sell, out of what the colony has. With Refill ticked, how many to keep on the counter. Type a number in the box, or use the buttons: hold Shift for 10 at a time, Ctrl for 100. All: everything, or nothing if it is already everything. Drag across the All buttons to set several lines at once.</RimMarket.StallSetupAdjustTip>
 	<RimMarket.StallSetupPriceHeaderTip>The asking price, as a share of the article's sell value. Like in vanilla, weapons sell for 20% of their worth and furniture for 70%. Shift: 25% at a time.</RimMarket.StallSetupPriceHeaderTip>
 	<RimMarket.StallSetupPriceTip>{0} of its sell value: {1} silver each. At this price a customer who fancies it buys it {2} of the time.</RimMarket.StallSetupPriceTip>
 	<RimMarket.StallSetupSummary>{0} articles to sell across {1} lines, about {2} silver if it all goes.</RimMarket.StallSetupSummary>

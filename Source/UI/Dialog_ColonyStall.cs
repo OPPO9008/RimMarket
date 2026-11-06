@@ -70,6 +70,8 @@ namespace RimMarket.UI
 		private Vector2 scroll;
 		private int refreshFrame = -9999;
 		private bool onlyForSale;
+		private bool paintingAll;
+		private bool paintAllOn;
 
 		public override Vector2 InitialSize => new Vector2(Mathf.Min(1130f, Verse.UI.screenWidth - 32f), 680f);
 
@@ -190,9 +192,10 @@ namespace RimMarket.UI
 				Close();
 				return;
 			}
+			if (paintingAll && !Input.GetMouseButton(0)) paintingAll = false;
 			if (editing != null && GUI.GetNameOfFocusedControl() != FieldName(editing)) Commit();
 			if (Time.frameCount - refreshFrame > RefreshFrames) Refresh();
-			BuildShown();
+			if (!paintingAll) BuildShown();
 
 			float y = inRect.y;
 			Text.Font = GameFont.Medium;
@@ -357,14 +360,21 @@ namespace RimMarket.UI
 			if (Widgets.ButtonText(new Rect(bx, mid, ButtonSize, ButtonSize), "+") && toSell < cap)
 				Apply(row, Mathf.Min(cap, toSell + step));
 			bx += ButtonSize + 4f;
-			if (Widgets.ButtonText(new Rect(bx, mid, 44f, ButtonSize), "RimMarket.StallSetupAll".Translate()))
-				Apply(row, toSell == max ? 0 : max);
+			Widgets.DraggableResult all = Widgets.ButtonTextDraggable(new Rect(bx, mid, 44f, ButtonSize), "RimMarket.StallSetupAll".Translate(), true, true);
+			if (all == Widgets.DraggableResult.Pressed) Apply(row, toSell == max ? 0 : max);
+			else if (all == Widgets.DraggableResult.Dragged)
+			{
+				paintingAll = true;
+				paintAllOn = toSell != max;
+				PaintAll(row, toSell, max);
+			}
+			else if (paintingAll && Mouse.IsOver(new Rect(bx, rect.y, 44f, rect.height))) PaintAll(row, toSell, max);
 			x += ColToSell;
 
 			var refillRect = new Rect(x, rect.y, ColRefill, rect.height);
 			TooltipHandler.TipRegion(refillRect, "RimMarket.StallSetupRefillTip".Translate());
 			bool refill = row.refill;
-			Widgets.Checkbox(new Vector2(x + (ColRefill - ButtonSize) / 2f, mid), ref refill);
+			Widgets.Checkbox(new Vector2(x + (ColRefill - ButtonSize) / 2f, mid), ref refill, ButtonSize, false, true);
 			if (refill != row.refill) SetRefill(row, refill);
 			x += ColRefill;
 
@@ -392,6 +402,15 @@ namespace RimMarket.UI
 		}
 
 		private static int PriceSteps() => Event.current.shift ? 5 : 1;
+
+		private void PaintAll(Row row, int toSell, int max)
+		{
+			if (paintAllOn)
+			{
+				if (max > 0 && toSell < max) Apply(row, max);
+			}
+			else if (toSell > 0) Apply(row, 0);
+		}
 
 		private static int Cap(Row row, int held) => row.refill ? Mathf.Max(RefillMax, row.available + held) : row.available + held;
 
