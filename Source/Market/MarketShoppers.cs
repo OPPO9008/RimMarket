@@ -107,6 +107,9 @@ namespace RimMarket.Market
 		private const int MaxGroupsOnMap = 3;
 		private const int MinSilver = 60;
 		private const int MaxSilver = 220;
+		private const float RichBuyerChance = 0.2f;
+		private const float RichPurseSlack = 1.15f;
+		private const int RichPurseCap = 1500;
 
 		public static bool MarketOpen(Map map)
 		{
@@ -159,7 +162,26 @@ namespace RimMarket.Market
 			return marker.Position;
 		}
 
-		public static string Send(Map map, CompMarketStall stall, Faction exclude, float purse = 1f)
+		public static float TopPurse(float purse) => MaxSilver * purse * MarketDifficulty.PurseFactor;
+
+		private static void MakeRichBuyer(Map map, Pawn buyer, float purse)
+		{
+			float cap = RichPurseCap * MarketDifficulty.PurseFactor;
+			Thing wanted = ColonyStalls.OutOfReach(map, TopPurse(purse), cap / RichPurseSlack, out float price);
+			if (wanted == null) return;
+			int missing = Mathf.CeilToInt(price * RichPurseSlack) - MarketUtility.SilverOf(buyer);
+			while (missing > 0)
+			{
+				Thing silver = ThingMaker.MakeThing(ThingDefOf.Silver);
+				silver.stackCount = Mathf.Min(missing, ThingDefOf.Silver.stackLimit);
+				missing -= silver.stackCount;
+				buyer.inventory.innerContainer.TryAdd(silver);
+			}
+			if (RimMarketMod.Settings.showMessages)
+				Messages.Message("RimMarket.ShoppersRich".Translate(buyer.Faction?.Name ?? "?", wanted.LabelNoCount), new LookTargets(buyer), MessageTypeDefOf.NeutralEvent, historical: false);
+		}
+
+		public static string Send(Map map, CompMarketStall stall, Faction exclude, float purse = 1f, bool rich = false)
 		{
 			if (map == null || stall == null || !stall.Spawned) return null;
 			Thing marker = MarketUtility.MarkerFor(stall);
@@ -183,6 +205,7 @@ namespace RimMarket.Market
 				p.inventory.innerContainer.TryAdd(silver);
 				group.Add(p);
 			}
+			if (rich || Rand.Chance(RichBuyerChance)) MakeRichBuyer(map, group[0], purse);
 			LordMaker.MakeNewLord(faction, new LordJob_MarketShoppers(marker, Rand.RangeInclusive(MinStay, MaxStay)), map, group);
 			return faction.Name;
 		}

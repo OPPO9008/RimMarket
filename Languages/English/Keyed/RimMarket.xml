@@ -43,6 +43,7 @@
 	<RimMarket.Settings.ShoppersVisit>Passing shoppers</RimMarket.Settings.ShoppersVisit>
 	<RimMarket.Settings.ShoppersVisitHint>An hour or two after a merchant sets up, a few people from a friendly faction walk over with some silver, browse the stalls, buy what they can afford and go home about five hours later, or the next morning if they took a bed at your inn. Groups also come for your colony stalls when no merchant is in town, as often as set below. No Hospitality needed.\n\nOff: no shoppers at all. Hospitality guests still buy.</RimMarket.Settings.ShoppersVisitHint>
 	<RimMarket.ShoppersArrived>Shoppers from {0} have heard about the market and are walking over.</RimMarket.ShoppersArrived>
+	<RimMarket.ShoppersRich>A wealthy buyer from {0} has come for your {1}.</RimMarket.ShoppersRich>
 	<RimMarket.ShoppersForColonyStall>Shoppers from {0} have come to see what the colony has on its stalls.</RimMarket.ShoppersForColonyStall>
 	<RimMarket.ShoppersForBargains>Shoppers from {0} heard the colony sells cheap and have come for a bargain.</RimMarket.ShoppersForBargains>
 	<RimMarket.Settings.InnPrice>Market inn, silver per night</RimMarket.Settings.InnPrice>

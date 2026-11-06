@@ -311,10 +311,16 @@ namespace RimMarket.Market
 			if (!pawn.IsColonist)
 			{
 				ColonyStalls.OpenStalls(pawn.Map, colonyBuffer);
+				int purse = pawn.GetLord()?.LordJob is LordJob_MarketShoppers ? SilverOf(pawn) : 0;
 				for (int i = 0; i < colonyBuffer.Count; i++)
 				{
 					CompMarketStall c = colonyBuffer[i].Stall;
 					if (c == null || !c.CustomerCell.InAllowedArea(pawn) || !pawn.CanReach(c.CustomerCell, PathEndMode.OnCell, Danger.None)) continue;
+					if (ColonyStalls.HoldsDearFor(colonyBuffer[i], purse))
+					{
+						seller = ColonyStalls.KeeperAt(colonyBuffer[i]);
+						return c;
+					}
 					stalls.Add(c);
 					sellers.Add(ColonyStalls.KeeperAt(colonyBuffer[i]));
 				}

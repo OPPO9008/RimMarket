@@ -267,6 +267,51 @@ namespace RimMarket.Market
 
 		public static int ShownPrice(float unitValue, float factor) => Mathf.Max(1, Mathf.RoundToInt(unitValue * factor));
 
+		private static float Asked(Thing t, Building_MarketStall s, float keeper) => UnitPrice(t, s.OrderFor(StockDef(t)).priceFactor * keeper * SaleFactor(StockDef(t)));
+
+		public static bool HoldsDearFor(Building_MarketStall s, int silver)
+		{
+			float top = MarketShoppers.TopPurse(1f);
+			if (silver <= top) return false;
+			float keeper = KeeperFactor(s);
+			IReadOnlyList<Thing> stock = s.Stock;
+			for (int i = 0; i < stock.Count; i++)
+			{
+				Thing t = stock[i];
+				if (!Sellable(t, s)) continue;
+				float asked = Asked(t, s, keeper);
+				if (asked > top && asked <= silver) return true;
+			}
+			return false;
+		}
+
+		public static Thing OutOfReach(Map map, float above, float upTo, out float price)
+		{
+			price = 0f;
+			OpenStalls(map, buffer);
+			var dear = new List<Thing>();
+			var prices = new List<float>();
+			for (int i = 0; i < buffer.Count; i++)
+			{
+				Building_MarketStall s = buffer[i];
+				float keeper = KeeperFactor(s);
+				IReadOnlyList<Thing> stock = s.Stock;
+				for (int j = 0; j < stock.Count; j++)
+				{
+					Thing t = stock[j];
+					if (!Sellable(t, s)) continue;
+					float asked = Asked(t, s, keeper);
+					if (asked <= above || asked > upTo) continue;
+					dear.Add(t);
+					prices.Add(asked);
+				}
+			}
+			if (dear.Count == 0) return null;
+			int pick = Rand.Range(0, dear.Count);
+			price = prices[pick];
+			return dear[pick];
+		}
+
 		public static float SaleFactor(ThingDef def) => MarketDemand.PriceFactor(def) * MarketDifficulty.SalePriceFactor;
 
 		public static bool Sell(Pawn buyer, Building_MarketStall s, out Thing bought, out int price)
@@ -278,15 +323,20 @@ namespace RimMarket.Market
 			if (silver < MarketUtility.MinGuestPurchase) return false;
 			float keeper = KeeperFactor(s);
 			var affordable = new List<Thing>();
+			var dear = new List<Thing>();
+			float top = MarketShoppers.TopPurse(1f);
 			IReadOnlyList<Thing> stock = s.Stock;
 			for (int i = 0; i < stock.Count; i++)
 			{
 				Thing t = stock[i];
 				if (!Sellable(t, s)) continue;
-				if (UnitPrice(t, s.OrderFor(StockDef(t)).priceFactor * keeper * SaleFactor(StockDef(t))) <= silver) affordable.Add(t);
+				float asked = Asked(t, s, keeper);
+				if (asked > silver) continue;
+				affordable.Add(t);
+				if (asked > top) dear.Add(t);
 			}
 			if (affordable.Count == 0) return false;
-			Thing pick = affordable.RandomElement();
+			Thing pick = (dear.Count > 0 ? dear : affordable).RandomElement();
 			float baseFactor = s.OrderFor(StockDef(pick)).priceFactor;
 			float chance = (ChanceFor(baseFactor) + (KeeperAt(s) != null ? KeeperBuyBonus : 0f)) * MarketDemand.Demand(StockDef(pick));
 			if (!Rand.Chance(Mathf.Clamp01(chance))) return false;

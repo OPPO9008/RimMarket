@@ -260,6 +260,22 @@ namespace RimMarket.Debug
 			TradeRouteUtility.StartAmbush(convoy, enemy);
 		}
 
+		[DebugAction("RimMarket", "Send shoppers with a rich buyer",
+			actionType = DebugActionType.Action,
+			allowedGameStates = AllowedGameStates.PlayingOnMap)]
+		private static void SendRichShoppers()
+		{
+			Map map = Find.CurrentMap;
+			Building_MarketStall stall = ColonyStalls.FirstStocked(map);
+			if (stall == null)
+			{
+				Messages.Message("[RimMarket] no stocked colony stall inside an open market.", MessageTypeDefOf.RejectInput, false);
+				return;
+			}
+			if (MarketShoppers.Send(map, stall.Stall, null, 1f, true) == null)
+				Messages.Message("[RimMarket] the shoppers could not be sent.", MessageTypeDefOf.RejectInput, false);
+		}
+
 		[DebugAction("RimMarket", "Send a thief",
 			actionType = DebugActionType.Action,
 			allowedGameStates = AllowedGameStates.PlayingOnMap)]
